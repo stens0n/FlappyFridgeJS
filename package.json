@@ -8,6 +8,8 @@
   "scripts": {
     "minify:html": "html-minifier --input-dir ./ --output-dir ./dist --file-ext html",
     "copy:assets": "ncp assets/ dist/assets/",
-    "build": "npm run minify:html && npm run copy:assets"
+    "copy:sound": "ncp sound/ dist/sound/",
+    "build": "npm run minify:html && npm run copy:assets && npm run copy:sound"
   }
+  
 }

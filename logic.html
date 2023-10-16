@@ -62,6 +62,8 @@
                 let birdY = canvas.height / 2;
 
                 let jumpSound = new Audio('sound/sfx_wing.wav');
+                jumpSound.preload = 'auto';
+                jumpSound.load();
 
                 let pipeList = [];
 
@@ -95,6 +97,12 @@
                     let fontSize = Math.floor(canvas.width / 20);  // Set the font size as a function of canvas width
                     ctx.font = fontSize + "px Arial";  // Set the new font size
                 }
+
+                function playJumpSound() {
+                    // Resetting the current time to 0 allows the audio to play from the start each time.
+                    jumpSound.currentTime = 0;
+                    jumpSound.play();
+                    }
 
 
 
@@ -175,17 +183,18 @@
 
                 // Define the 'jump' function separately
                 function jump(event) {
-                    jumpSound.play();
                     if (event) event.preventDefault();  // Prevent additional events like 'click'
-                    
+  
                     if (gameActive) {
                         birdMovement = 0;
-                        birdMovement -= 10;
+                        birdMovement -= 9.5;
+
+                        playJumpSound();  // Play the jump sound
                     } else {
                         gameActive = true;
                         resetGame();
                     }
-                }
+                    }
 
                 // Reference the 'jump' function in the event listeners
                 canvas.addEventListener('click', jump);

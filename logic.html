@@ -23,7 +23,7 @@
 
 
   <body>
-    <canvas id="gameCanvas" width="900" height="400"></canvas>
+    <canvas id="gameCanvas"></canvas>
         
         <script>
 
@@ -48,6 +48,14 @@
                     canvas.style.position = 'absolute';
                     canvas.style.left = (window.innerWidth - newWidth) / 2 + 'px';
                     canvas.style.top = (window.innerHeight - newHeight) / 2 + 'px';
+                    updateTextSize();
+                }
+
+                function updateBoxSize() {
+                    let scoreText = "Score: " + score;
+                    let scoreTextWidth = ctx.measureText(scoreText).width;
+                    scoreBoxWidth = scoreTextWidth + 20;  // Add some padding
+                    scoreBoxHeight = 50;  // Height remains the same
                 }
                 
                 setCanvasDimensions();
@@ -61,6 +69,7 @@
                 let canScore = true;
                 let birdY = canvas.height / 2;
 
+                // Sound 
                 let jumpSound = new Audio('sound/sfx_wing.wav');
                 jumpSound.preload = 'auto';
                 jumpSound.load();
@@ -69,6 +78,7 @@
 
                 let pipeHeight = [canvas.height * 0.6, canvas.height * 0.65, canvas.height * 0.7, canvas.height * 0.75, canvas.height * 0.8];
 
+                // Images
                 let bgImage = new Image();
                 bgImage.src = 'assets/background-day.png';
 
@@ -94,8 +104,8 @@
                 }
 
                 function updateTextSize() {
-                    let fontSize = Math.floor(canvas.width / 20);  // Set the font size as a function of canvas width
-                    ctx.font = fontSize + "px Arial";  // Set the new font size
+                    let fontSize = Math.min(40, Math.floor(canvas.width / 20));
+                    ctx.font = fontSize + "px Arial";
                 }
 
                 function playJumpSound() {
@@ -164,14 +174,45 @@
                 }
                 }
                 
-                function drawScore() {
-                    if (gameActive) {  // Only draw score when the game is active
-                        updateTextSize();
-                        ctx.fillStyle = "white";
-                        ctx.fillText("Score: " + score, 10, 50);
+                function drawRoundedRect(x, y, width, height, radius, fill, stroke) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + radius, y);
+                    ctx.lineTo(x + width - radius, y);
+                    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                    ctx.lineTo(x + width, y + height - radius);
+                    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                    ctx.lineTo(x + radius, y + height);
+                    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                    ctx.lineTo(x, y + radius);
+                    ctx.quadraticCurveTo(x, y, x + radius, y);
+                    ctx.closePath();
+                    if (stroke) {
+                        ctx.stroke();
+                    }
+                    if (fill) {
+                        ctx.fill();
                     }
                 }
 
+                function drawScore() {
+                    if (gameActive) {
+                        ctx.font = "20px Arial";  // Update the font size
+                        let scoreText = "Score: " + score;
+                        let textMetrics = ctx.measureText(scoreText);
+                        
+                        let scoreBoxWidth = textMetrics.width + 20;  // Add padding
+                        let scoreBoxHeight = 30;  // Make height static, adjust as needed
+
+                        ctx.fillStyle = "white";
+                        ctx.strokeStyle = "black";
+                        ctx.lineWidth = 3;
+                        drawRoundedRect(5, 5, scoreBoxWidth, scoreBoxHeight, 10, true, true);
+
+                        let textY = 5 + (scoreBoxHeight + parseInt(ctx.font)) / 2; // Center text vertically
+                        ctx.fillStyle = "black";
+                        ctx.fillText(scoreText, 10, textY);  // Vertical alignment within box  // Vertical alignment within box
+                                    }
+                                }
 
                 function resetGame() {
                     pipeList = [];
@@ -201,24 +242,49 @@
                 canvas.addEventListener('touchstart', jump);
             
                 function gameOver() {
+                    scoreBoxWidth = 0;
+                    scoreBoxHeight = 0;
                     if (score > highScore) {
                         highScore = score;
             }
-                    ctx.font = "40px Arial";
-                    ctx.fillStyle = "white";
+                
+                    ctx.strokeStyle = "black";
+                    ctx.lineWidth = 3;
+                    
+                    
+                    ctx.fillStyle = "black"; // Text color
+                    
 
                     // Resizing the game over image
-                    let gameOverWidth = canvas.width * 1.4; // 80% of canvas width
-                    let gameOverHeight = canvas.height * 1.4; // 80% of canvas height
+                    let gameOverWidth = canvas.width * 1.4; // 140% of canvas width
+                    let gameOverHeight = canvas.height * 1.4; // 140% of canvas height
                     let xPosition = (canvas.width - gameOverWidth) / 2; // Center the x-position
                     let yPosition = (canvas.height - gameOverHeight) / 2; // Center the y-position
+                    
+                    yPosition += canvas.height * 0.1;  // Move the image downwards by 10% of the canvas height
 
                     ctx.drawImage(gameOverImage, xPosition, yPosition, gameOverWidth, gameOverHeight);
 
-                    updateTextSize();
-                    ctx.fillText("Current Score: " + score, 10, 50);
-                    ctx.fillText("High Score: " + highScore, 10, 100);
-        }
+                    ctx.font = "20px Arial";  // Update the font size
+                    let currentScoreText = "Current Score: " + score;
+                    let highScoreText = "High Score: " + highScore;
+
+                    let textMetricsCurrent = ctx.measureText(currentScoreText);
+                    let textMetricsHigh = ctx.measureText(highScoreText);
+
+                    let boxWidth = Math.max(textMetricsCurrent.width, textMetricsHigh.width) + 20;
+                    let boxHeight = 30;  // Make height static, adjust as needed
+
+                    drawRoundedRect(5, 5, boxWidth, boxHeight, 10, true, true);
+                    drawRoundedRect(5, 5 + boxHeight + 5, boxWidth, boxHeight, 10, true, true);
+
+                    let textYCurrent = 5 + (boxHeight + parseInt(ctx.font)) / 2;
+                    let textYHigh = 5 + boxHeight + 5 + (boxHeight + parseInt(ctx.font)) / 2;
+
+                    ctx.fillStyle = "white";
+                    ctx.fillText(currentScoreText, 10, textYCurrent);
+                    ctx.fillText(highScoreText, 10, textYHigh);
+                        }
             
 
                 function gameLoop() {

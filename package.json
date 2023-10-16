@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "csso-cli": "^4.0.2",
+    "html-minifier": "^4.0.0",
+    "ncp": "^2.0.0",
+    "uglify-js": "^3.17.4"
+  },
+  "scripts": {
+    "minify:html": "html-minifier --input-dir ./ --output-dir ./dist --file-ext html",
+    "copy:assets": "ncp assets/ dist/assets/",
+    "build": "npm run minify:html && npm run copy:assets"
+  }
+}

@@ -27,23 +27,24 @@
         
         <script>
 
-                let canvas = document.getElementById("gameCanvas");
-                let ctx = canvas.getContext("2d");
-                let gravity = 0.28;
-                let birdMovement = 0;
-                let gameActive = true;
-                let score = 0;
-                let highScore = 0;
-                let canScore = true;
-                let birdY = canvas.height / 2;
+                let canvas = document.getElementById("gameCanvas"),
+                    ctx = canvas.getContext("2d"),
+                    gravity = 0.28,
+                    birdMovement = 0,
+                    gameActive = true,
+                    score = 0,
+                    highScore = 0,
+                    canScore = true,
+                    birdY = canvas.height / 2;
 
                 //  SETUP FUNCTIONS
 
                 // Game Canvas Dimensions
                 function setCanvasDimensions() {
-                    let aspectRatio = 955 / 800; // Original width / Original height
-                    let newWidth = window.innerWidth * 0.8; // 80% of window width
-                    let newHeight = newWidth / aspectRatio;
+                    
+                    let aspectRatio = 955 / 800,
+                    newWidth = window.innerWidth * 0.8,
+                    newHeight = newWidth / aspectRatio;
                     
                     if (newHeight > window.innerHeight) {
                         newHeight = window.innerHeight * 0.8; // 80% of window height
@@ -66,8 +67,8 @@
                 }
 
                 function updateBoxSize() {
-                    let scoreText = "Score: " + score;
-                    let scoreTextWidth = ctx.measureText(scoreText).width;
+                    let scoreText = "Score: " + score,
+                    scoreTextWidth = ctx.measureText(scoreText).width;
                     scoreBoxWidth = scoreTextWidth + 20;  //  padding
                     scoreBoxHeight = 50;  
                 }
@@ -103,13 +104,12 @@
 
                 // Create Pipe
                 function createPipe() {
-                    let gap = 207;
-                    let minPipeTop = 33;  // minimum space from the top
-                    let maxPipeTop = canvas.height - gap ;  // maximum space for top pipe, ensuring enough space for bottom pipe
-                    let randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop);
-                
-                    let bottomPipe = { x: canvas.width, y: randomY + gap, type: 'bottom' };
-                    let topPipe = { x: canvas.width, y: randomY, type: 'top' };
+                    let gap = 207,
+                        minPipeTop = 33,
+                        maxPipeTop = canvas.height - gap,
+                        randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop),
+                        bottomPipe = { x: canvas.width, y: randomY + gap, type: 'bottom' },
+                        topPipe = { x: canvas.width, y: randomY, type: 'top' };
                 
                     return [bottomPipe, topPipe];
                 }
@@ -126,10 +126,9 @@
 
                 function checkCollision(pipes) {
                     for(let pipe of pipes) {
-                    let birdBox = { x: 100, y: birdY, width: birdImage.width * 1.5, height: birdImage.height * 1.5 };
-
-                    let correctedY = (pipe.type === 'top') ? pipe.y - pipeImage.height * 1.5 : pipe.y;
-                    let pipeBox = { x: pipe.x, y: correctedY, width: pipeImage.width * 1.5, height: pipeImage.height * 1.5 };
+                    let birdBox = { x: 100, y: birdY, width: birdImage.width * 1.5, height: birdImage.height * 1.5 },
+                        correctedY = (pipe.type === 'top') ? pipe.y - pipeImage.height * 1.5 : pipe.y,
+                        pipeBox = { x: pipe.x, y: correctedY, width: pipeImage.width * 1.5, height: pipeImage.height * 1.5 };
 
                     if (birdBox.x < pipeBox.x + pipeBox.width &&
                         birdBox.x + birdBox.width > pipeBox.x &&
@@ -183,11 +182,10 @@
                 function drawScore() {
                     if (gameActive) {
                         ctx.font = "20px Arial";  // Update the font size
-                        let scoreText = "Score: " + score;
-                        let textMetrics = ctx.measureText(scoreText);
-                        
-                        let scoreBoxWidth = textMetrics.width + 20;  // Add padding
-                        let scoreBoxHeight = 30;  // Make height static, adjust as needed
+                        let scoreText = "Score: " + score,
+                            textMetrics = ctx.measureText(scoreText),
+                            scoreBoxWidth = textMetrics.width + 20,
+                            scoreBoxHeight = 30;  // Make height static, adjust as needed
 
                         ctx.fillStyle = "white";
                         ctx.strokeStyle = "black";
@@ -235,10 +233,10 @@
                     if (gameActive) {
                         birdMovement += gravity;
                         birdY += birdMovement;
-                        let birdWidth = birdImage.width * 1.5;  // Double the original width
-                        let birdHeight = birdImage.height * 1.5;  // Double the original height
+                        let birdWidth = birdImage.width * 1.5, 
+                            birdHeight = birdImage.height * 1.5;  // Double the original height
                         
-                        // Calculate rotation angle based on birdMovement
+                        // Bird Movement Rotation PI = 45 degrees
                         let angle = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, birdMovement / 12));
                         
                         ctx.save();

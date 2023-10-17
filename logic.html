@@ -42,7 +42,7 @@
                 // Game Canvas Dimensions
                 function setCanvasDimensions() {
                     
-                    let aspectRatio = 955 / 800,
+                    let aspectRatio = 955 / 800, // canvas size
                     newWidth = window.innerWidth * 0.8,
                     newHeight = newWidth / aspectRatio;
                     
@@ -58,14 +58,17 @@
                     canvas.style.top = (window.innerHeight - newHeight) / 2 + 'px';
                     updateTextSize();
                 }
+                
                 setCanvasDimensions();
                 window.onresize = setCanvasDimensions;
 
+                // Update the canvas size
                 function updateTextSize() {
                     let fontSize = Math.min(40, Math.floor(canvas.width / 20));
                     ctx.font = fontSize + "px Arial";
                 }
 
+                // Box Size
                 function updateBoxSize() {
                     let scoreText = "Score: " + score,
                     scoreTextWidth = ctx.measureText(scoreText).width;
@@ -115,12 +118,19 @@
                 }
 
                 // Move da pipes
-                function movePipes(pipes) {
-                    for(let pipe of pipes) {
-                        pipe.x -= 5;
+                function movePipes(pipes, amount) {
+                    if (pipes.length === 0) return pipes;
+                    
+                    const [first, ...rest] = pipes;
+                    
+                    const newFirst = {...first, x: first.x - amount};
+                    
+                    if (newFirst.x > -pipeImage.width) {
+                        return [newFirst, ...movePipes(rest, amount)]; 
                     }
-                    return pipes.filter(pipe => pipe.x > -pipeImage.width);
-                }
+                    
+                    return [newFirst, ...movePipes([...rest], amount)];
+                    }
 
                 // Check Collisions
 
@@ -245,12 +255,12 @@
                         ctx.drawImage(birdImage, -birdWidth / 2, -birdHeight / 2, birdWidth, birdHeight);  // Draw bird at its new center
                         ctx.restore();  // Restore original canvas state
 
-                        pipeList = movePipes(pipeList);
+                        pipeList = movePipes(pipeList, 5); 
                         drawPipes(pipeList);
                     
                         gameActive = checkCollision(pipeList);
                         pipeScoreCheck();
-                    } else {
+                            } else {
                         gameOver();  // Call the gameOver function here
                                     // Draw game over image
                         

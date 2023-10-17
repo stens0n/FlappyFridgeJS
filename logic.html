@@ -34,7 +34,7 @@
                 let ctx = canvas.getContext("2d");
 
                 function setCanvasDimensions() {
-                    let aspectRatio = 900 / 800; // Original width / Original height
+                    let aspectRatio = 955 / 800; // Original width / Original height
                     let newWidth = window.innerWidth * 0.8; // 80% of window width
                     let newHeight = newWidth / aspectRatio;
                     
@@ -96,7 +96,7 @@
                 gameOverImage.src = 'assets/message-removebg-preview.png';
 
                 function createPipe() {
-                    let gap = 212;
+                    let gap = 228;
                     let minPipeTop = 100;  // minimum space from the top
                     let maxPipeTop = canvas.height - gap ;  // maximum space for top pipe, ensuring enough space for bottom pipe
                     let randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop);

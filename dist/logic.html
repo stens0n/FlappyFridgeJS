@@ -34,12 +34,12 @@
                 let ctx = canvas.getContext("2d");
 
                 function setCanvasDimensions() {
-                    let aspectRatio = 900 / 800; // Original width / Original height
-                    let newWidth = window.innerWidth * 0.8; // Taking 80% of window width
+                    let aspectRatio = 955 / 800; // Original width / Original height
+                    let newWidth = window.innerWidth * 0.8; // 80% of window width
                     let newHeight = newWidth / aspectRatio;
                     
                     if (newHeight > window.innerHeight) {
-                        newHeight = window.innerHeight * 0.8; // Taking 80% of window height
+                        newHeight = window.innerHeight * 0.8; // 80% of window height
                         newWidth = newHeight * aspectRatio;
                     }
 
@@ -74,6 +74,10 @@
                 jumpSound.preload = 'auto';
                 jumpSound.load();
 
+                let hitSound = new Audio('sound/sfx_hit.wav');
+                hitSound.preload = 'auto';
+                hitSound.load();
+
                 let pipeList = [];
 
                 let pipeHeight = [canvas.height * 0.6, canvas.height * 0.65, canvas.height * 0.7, canvas.height * 0.75, canvas.height * 0.8];
@@ -92,7 +96,7 @@
                 gameOverImage.src = 'assets/message-removebg-preview.png';
 
                 function createPipe() {
-                    let gap = 212;
+                    let gap = 228;
                     let minPipeTop = 100;  // minimum space from the top
                     let maxPipeTop = canvas.height - gap ;  // maximum space for top pipe, ensuring enough space for bottom pipe
                     let randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop);
@@ -108,12 +112,17 @@
                     ctx.font = fontSize + "px Arial";
                 }
 
+                // Sound Functions
                 function playJumpSound() {
                     // Resetting the current time to 0 allows the audio to play from the start each time.
                     jumpSound.currentTime = 0;
                     jumpSound.play();
                     }
-
+                    function playHitSound() {
+                        // Resetting the current time to 0 allows the audio to play from the start each time.
+                        hitSound.currentTime = 0;
+                        hitSound.play();
+                    }
 
 
                 function movePipes(pipes) {
@@ -150,6 +159,7 @@
                         birdBox.x + birdBox.width > pipeBox.x &&
                         birdBox.y < pipeBox.y + pipeBox.height &&
                         birdBox.y + birdBox.height > pipeBox.y) {
+                            playHitSound();
                             return false;
                     }
                 }

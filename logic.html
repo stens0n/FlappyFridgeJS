@@ -110,8 +110,9 @@
                     let gap = 207,
                         minPipeTop = 33,
                         maxPipeTop = canvas.height - gap,
-                        randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop),
-                        bottomPipe = { x: canvas.width, y: randomY + gap, type: 'bottom' },
+                        randomY = Math.floor(Math.random() * (maxPipeTop - minPipeTop + 1) + minPipeTop);
+
+                    let bottomPipe = { id: Date.now(), scored: false, x: canvas.width, y: randomY + gap, type: 'bottom' },
                         topPipe = { x: canvas.width, y: randomY, type: 'top' };
                 
                     return [bottomPipe, topPipe];
@@ -122,15 +123,13 @@
                     if (pipes.length === 0) return pipes;
                     
                     const [first, ...rest] = pipes;
-                    
                     const newFirst = {...first, x: first.x - amount};
-                    
                     if (newFirst.x > -pipeImage.width) {
                         return [newFirst, ...movePipes(rest, amount)]; 
                     }
                     
                     return [newFirst, ...movePipes([...rest], amount)];
-                    }
+                    };
 
                 // Check Collisions
 
@@ -160,16 +159,12 @@
                 // Check Pipe Score
                 function pipeScoreCheck() {
                     for (let pipe of pipeList) {
-                        if (pipe.type === 'bottom' && 1 < pipe.x && pipe.x < 150 && canScore) {
-                        score++;
-                        canScore = false;
-                    }
-
-                    if (pipe.x < 0) {
-                        canScore = true;
+                        if (pipe.type === 'bottom' && !pipe.scored && 1 < pipe.x && pipe.x < 150) {
+                            score++;
+                            pipe.scored = true;
+                        }
                     }
                 }
-                };
 
                 // Draw pipes
 
